@@ -608,10 +608,10 @@ const Header: React.FC = () => {
                   fontWeight: 600,
                   color: 'white'
                 }}>
-                  SY
+                  EO
                 </div>
                 <div style={{ textAlign: 'left' }}>
-                  <div style={{ fontSize: '0.875rem', fontWeight: 500 }}>Sam Young</div>
+                  <div style={{ fontSize: '0.875rem', fontWeight: 500 }}>Emmanuel Owusu Jnr</div>
                   <div style={{ fontSize: '0.75rem', color: '#9CA3AF' }}>Freelancer</div>
                 </div>
               </div>
