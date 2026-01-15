@@ -1,6 +1,6 @@
 import React from 'react';
-import { Bookmark, Clock, DollarSign } from 'lucide-react';
-import { Job } from '../types/job';
+import { Bookmark, Clock, Users, TrendingUp, MapPin } from 'lucide-react';
+import { Job } from '../types';
 
 interface JobCardProps {
   job: Job;
@@ -8,195 +8,117 @@ interface JobCardProps {
 }
 
 const JobCard: React.FC<JobCardProps> = ({ job, onToggleSave }) => {
-  const getTagStyle = (tag: string) => {
+  const getTagClasses = (tag: string) => {
     switch (tag) {
       case 'Fixed Budget':
       case 'Hourly Rate':
-        return {
-          background: 'var(--color-tag-green-bg)',
-          color: 'var(--color-tag-green-text)'
-        };
+        return 'bg-tag-green-bg text-tag-green-text';
       case 'Entry':
       case 'Intermediate':
       case 'Advanced':
-        return {
-          background: 'var(--color-tag-blue-bg)',
-          color: 'var(--color-tag-blue-text)'
-        };
+        return 'bg-tag-blue-bg text-tag-blue-text';
       default:
-        return {
-          background: 'var(--color-tag-gray-bg)',
-          color: 'var(--color-tag-gray-text)'
-        };
+        return 'bg-tag-gray-bg text-tag-gray-text';
     }
   };
 
+  // Parse the posted date for "NEW" badge
+  const parsePostedDate = (dateStr: string) => {
+    const match = dateStr.match(/(\d+)\s+(day|days)/i);
+    if (match) {
+      const days = parseInt(match[1], 10);
+      return days <= 3;
+    }
+    return false;
+  };
+
+  const isRecent = parsePostedDate(job.postedDate);
+
   return (
-    <div style={{
-      background: 'var(--color-card-bg)',
-      borderRadius: 'var(--radius-lg)',
-      padding: '1.5rem',
-      boxShadow: 'var(--shadow-sm)',
-      border: '1px solid var(--color-border-light)',
-      transition: 'var(--transition)',
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '1rem',
-      height: '100%'
-    }}
-    onMouseEnter={(e) => {
-      e.currentTarget.style.boxShadow = 'var(--shadow-md)';
-      e.currentTarget.style.transform = 'translateY(-2px)';
-    }}
-    onMouseLeave={(e) => {
-      e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
-      e.currentTarget.style.transform = 'translateY(0)';
-    }}
-    >
+    <div className="group bg-card-bg rounded-xl p-4 md:p-6 shadow-sm border border-border-light transition-all duration-300 hover:shadow-md hover:-translate-y-1 flex flex-col gap-3 md:gap-4 h-full relative">
+      {/* Recent indicator badge */}
+      {isRecent && (
+        <div className="absolute -top-2 right-4 bg-accent-green text-text-primary px-2 md:px-3 py-0.5 rounded-full text-xs font-semibold z-10">
+          NEW
+        </div>
+      )}
+
       {/* Card Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-        <div style={{ display: 'flex', gap: '1rem' }}>
-          <div style={{
-            width: '48px',
-            height: '48px',
-            background: 'var(--color-bg-light)',
-            borderRadius: 'var(--radius-md)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '1.5rem',
-            flexShrink: 0
-          }}>
+      <div className="flex justify-between items-start gap-2">
+        <div className="flex gap-3 md:gap-4 min-w-0">
+          <div className="w-10 h-10 md:w-12 md:h-12 bg-bg-light rounded-lg flex items-center justify-center text-xl md:text-2xl flex-shrink-0">
             {job.companyLogo}
           </div>
-          <div>
-            <h3 style={{
-              fontSize: '1rem',
-              fontWeight: 600,
-              color: 'var(--color-text-primary)',
-              marginBottom: '0.25rem'
-            }}>
+          <div className="min-w-0 flex-1">
+            <h3 className="text-base font-semibold text-text-primary mb-1 truncate">
               {job.title}
             </h3>
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-              fontSize: '0.75rem',
-              color: 'var(--color-text-secondary)',
-              flexWrap: 'wrap'
-            }}>
-              <span style={{ fontWeight: 500 }}>{job.company}</span>
-              <span style={{ color: 'var(--color-border)' }}>•</span>
-              <span>{job.proposals} proposals</span>
-              <span style={{ color: 'var(--color-border)' }}>•</span>
-              <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-                <Clock size={12} />
-                Posted {job.postedDate}
+            <div className="flex items-center gap-1 md:gap-2 text-xs text-text-secondary flex-wrap">
+              <span className="font-medium truncate">{job.company}</span>
+              <span className="text-border hidden md:inline">•</span>
+              <span className="flex items-center gap-1 truncate">
+                <MapPin size={10} className="flex-shrink-0" />
+                <span className="truncate">{job.location}</span>
+              </span>
+              <span className="text-border">•</span>
+              <span className="flex items-center gap-1">
+                <Users size={10} className="flex-shrink-0" />
+                {job.proposals}
+              </span>
+              <span className="text-border hidden md:inline">•</span>
+              <span className="flex items-center gap-1">
+                <Clock size={10} className="flex-shrink-0" />
+                {job.postedDate}
               </span>
             </div>
           </div>
         </div>
         <button
           onClick={() => onToggleSave(job.id)}
-          style={{
-            background: 'none',
-            border: 'none',
-            color: job.isSaved ? 'var(--color-accent-green)' : 'var(--color-text-light)',
-            cursor: 'pointer',
-            padding: '0.25rem',
-            borderRadius: 'var(--radius-sm)',
-            transition: 'var(--transition)'
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = 'var(--color-bg-light)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = 'none';
-          }}
+          className={`p-1 rounded transition-colors flex-shrink-0 ${
+            job.isSaved ? 'text-accent-green' : 'text-text-light'
+          } hover:bg-bg-light`}
+          aria-label={job.isSaved ? 'Remove from saved' : 'Save job'}
         >
           <Bookmark size={20} fill={job.isSaved ? 'currentColor' : 'none'} />
         </button>
       </div>
 
       {/* Tags */}
-      <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-        {job.tags.map((tag) => {
-          const tagStyle = getTagStyle(tag);
-          return (
-            <span
-              key={tag}
-              style={{
-                padding: '0.25rem 0.75rem',
-                borderRadius: 'var(--radius-pill)',
-                fontSize: '0.75rem',
-                fontWeight: 500,
-                ...tagStyle
-              }}
-            >
-              {tag}
-            </span>
-          );
-        })}
+      <div className="flex gap-2 flex-wrap">
+        {job.tags.map((tag) => (
+          <span
+            key={tag}
+            className={`px-2 md:px-3 py-1 rounded-full text-xs font-medium ${getTagClasses(tag)}`}
+          >
+            {tag}
+          </span>
+        ))}
       </div>
 
       {/* Description */}
-      <p style={{
-        fontSize: '0.875rem',
-        color: 'var(--color-text-secondary)',
-        lineHeight: 1.6,
-        flexGrow: 1
-      }}>
+      <p className="text-sm text-text-secondary leading-relaxed flex-grow line-clamp-2">
         {job.description}
       </p>
 
       {/* Footer */}
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        paddingTop: '1rem',
-        borderTop: '1px solid var(--color-border-light)'
-      }}>
-        <div>
-          <div style={{
-            fontSize: '1.25rem',
-            fontWeight: 700,
-            color: 'var(--color-text-primary)',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.25rem'
-          }}>
-            <DollarSign size={16} />
-            {job.salary}
+      <div className="pt-3 md:pt-4 border-t border-border-light flex justify-between items-center gap-4">
+        <div className="min-w-0">
+          <div className="text-lg md:text-xl font-bold text-text-primary flex items-center gap-1">
+            <span className="flex-shrink-0">₵</span>
+            <span className="truncate">{job.salary}</span>
+            {job.salaryType === 'Hourly Rate' && (
+              <span className="text-xs font-normal text-text-light ml-1 flex-shrink-0">
+                / hour
+              </span>
+            )}
           </div>
-          <div style={{
-            fontSize: '0.75rem',
-            color: 'var(--color-text-light)'
-          }}>
+          <div className="text-xs text-text-light flex items-center gap-1">
+            <TrendingUp size={10} className="flex-shrink-0" />
             {job.salaryType}
           </div>
         </div>
-        <button style={{
-          background: 'white',
-          color: 'var(--color-text-primary)',
-          border: '1px solid var(--color-border)',
-          borderRadius: 'var(--radius-md)',
-          padding: '0.5rem 1.5rem',
-          fontSize: '0.875rem',
-          fontWeight: 500,
-          cursor: 'pointer',
-          transition: 'var(--transition)'
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.background = 'var(--color-bg-light)';
-          e.currentTarget.style.borderColor = 'var(--color-text-light)';
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.background = 'white';
-          e.currentTarget.style.borderColor = 'var(--color-border)';
-        }}
-        >
+        <button className="bg-white text-text-primary border border-border rounded-md px-4 md:px-6 py-2 text-sm font-medium cursor-pointer transition-colors whitespace-nowrap hover:bg-bg-light hover:border-accent-green hover:text-accent-green">
           Submit Proposal
         </button>
       </div>

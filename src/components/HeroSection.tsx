@@ -1,135 +1,84 @@
+// components/HeroSection.tsx (updated)
 import React, { useState } from 'react';
 import { Search, MapPin } from 'lucide-react';
 
-const HeroSection: React.FC = () => {
+interface HeroSectionProps {
+  onSearch?: (query: string, location: string) => void;
+}
+
+const HeroSection: React.FC<HeroSectionProps> = ({ onSearch }) => {
   const [jobQuery, setJobQuery] = useState('');
   const [location, setLocation] = useState('');
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle search logic here
-    console.log('Searching for:', { jobQuery, location });
+    if (onSearch) {
+      onSearch(jobQuery, location);
+    }
   };
 
   return (
-    <div style={{
-      background: 'var(--color-dark-gradient)',
-      padding: '3rem 2rem'
-    }}>
-      <div className="container" style={{ textAlign: 'center' }}>
-        <h1 style={{
-          color: 'white',
-          fontSize: '2.5rem',
-          fontWeight: 700,
-          lineHeight: 1.2,
-          marginBottom: '2rem',
-          letterSpacing: '-0.025em'
-        }}>
+    <div className="bg-dark-gradient py-8 md:py-12 px-4 md:px-8">
+      <div className="max-w-4xl mx-auto text-center">
+        <h1 className="text-white text-3xl md:text-4xl lg:text-5xl font-bold leading-tight mb-6 md:mb-8 tracking-tight">
           Find your next freelance project
         </h1>
 
-        {/* Pill-shaped Search Bar - EXACT from specification */}
-        <form onSubmit={handleSearch} style={{ maxWidth: '800px', margin: '0 auto' }}>
-          <div style={{
-            background: 'white',
-            borderRadius: 'var(--radius-pill)',
-            padding: '0.5rem',
-            display: 'flex',
-            alignItems: 'center',
-            boxShadow: 'var(--shadow-lg)'
-          }}>
+        <form onSubmit={handleSearch} className="max-w-3xl mx-auto">
+          <div className="bg-white rounded-2xl md:rounded-full p-2 md:p-3 flex flex-col md:flex-row items-center shadow-lg">
             {/* Job Search Input */}
-            <div style={{
-              flex: 1,
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.75rem',
-              padding: '0 1rem'
-            }}>
-              <Search size={20} color="#6B7280" />
+            <div className="flex-1 w-full md:w-auto flex items-center gap-2 md:gap-3 px-3 md:px-4 py-2 md:py-3 mb-2 md:mb-0 md:border-r border-border">
+              <Search size={18} className="text-text-secondary flex-shrink-0" />
               <input
                 type="text"
                 placeholder="Job Title or Keywords"
                 value={jobQuery}
                 onChange={(e) => setJobQuery(e.target.value)}
-                style={{
-                  width: '100%',
-                  padding: '0.75rem 0',
-                  border: 'none',
-                  outline: 'none',
-                  fontSize: '0.875rem',
-                  color: 'var(--color-text-primary)'
-                }}
+                className="w-full py-1 md:py-0 border-none outline-none text-sm md:text-base text-text-primary placeholder:text-text-light"
               />
             </div>
             
-            {/* Vertical Divider */}
-            <div style={{
-              width: '1px',
-              height: '24px',
-              background: 'var(--color-border)'
-            }} />
-            
             {/* Location Input */}
-            <div style={{
-              flex: 1,
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.75rem',
-              padding: '0 1rem'
-            }}>
-              <MapPin size={20} color="#6B7280" />
+            <div className="flex-1 w-full md:w-auto flex items-center gap-2 md:gap-3 px-3 md:px-4 py-2 md:py-3 mb-2 md:mb-0 md:border-r border-border">
+              <MapPin size={18} className="text-text-secondary flex-shrink-0" />
               <input
                 type="text"
                 placeholder="Client location"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
-                style={{
-                  width: '100%',
-                  padding: '0.75rem 0',
-                  border: 'none',
-                  outline: 'none',
-                  fontSize: '0.875rem',
-                  color: 'var(--color-text-primary)'
-                }}
+                className="w-full py-1 md:py-0 border-none outline-none text-sm md:text-base text-text-primary placeholder:text-text-light"
               />
             </div>
-            
-            {/* Vertical Divider */}
-            <div style={{
-              width: '1px',
-              height: '24px',
-              background: 'var(--color-border)'
-            }} />
             
             {/* Search Button */}
             <button
               type="submit"
-              style={{
-                background: 'var(--color-accent-green)',
-                color: 'var(--color-text-primary)',
-                border: 'none',
-                borderRadius: 'var(--radius-pill)',
-                padding: '0.75rem 2rem',
-                fontSize: '0.875rem',
-                fontWeight: 600,
-                cursor: 'pointer',
-                transition: 'var(--transition)',
-                whiteSpace: 'nowrap'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'var(--color-accent-green-dark)';
-                e.currentTarget.style.transform = 'translateY(-1px)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'var(--color-accent-green)';
-                e.currentTarget.style.transform = 'translateY(0)';
-              }}
+              className="bg-accent-green text-text-primary border-none rounded-lg md:rounded-full px-6 py-3 md:py-3 text-sm md:text-base font-semibold cursor-pointer transition-all hover:bg-accent-green-dark hover:-translate-y-0.5 whitespace-nowrap w-full md:w-auto flex items-center justify-center gap-2 mt-2 md:mt-0"
             >
+              <Search size={16} />
               Search Jobs
             </button>
           </div>
         </form>
+        
+        {/* Popular Searches */}
+        <div className="mt-6 md:mt-8">
+          <p className="text-gray-400 text-sm mb-2">Popular searches:</p>
+          <div className="flex flex-wrap gap-2 justify-center">
+            {['React Developer', 'UI/UX Designer', 'Web Developer', 'Mobile App', 'Copywriter', 'Python', 'Full Stack'].map((tag) => (
+              <button
+                key={tag}
+                onClick={() => {
+                  setJobQuery(tag);
+                  if (onSearch) onSearch(tag, location);
+                }}
+                className="text-gray-300 hover:text-white bg-white/10 hover:bg-white/20 px-3 py-1 rounded-full text-xs md:text-sm transition-colors"
+              >
+                {tag}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );

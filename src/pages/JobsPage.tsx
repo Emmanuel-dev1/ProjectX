@@ -1,186 +1,176 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { ChevronDown, Filter, X, Search as SearchIcon } from 'lucide-react';
 import Header from '../components/Header';
 import HeroSection from '../components/HeroSection';
 import SidebarFilters from '../components/SidebarFilters';
 import JobCard from '../components/JobCard';
-import { ChevronDown, Filter, X } from 'lucide-react';
-import { Job } from '../types/job';
+import { Job } from '../types';
 
 const JobsPage: React.FC = () => {
   // Filter states
-  const [selectedLevels, setSelectedLevels] = useState<string[]>(['Intermediate']);
-  const [selectedPayment, setSelectedPayment] = useState<string[]>(['Fixed Budget']);
-  const [selectedCategories, setSelectedCategories] = useState<string[]>(['Website Design']);
-  const [sortBy, setSortBy] = useState('Recently Listed');
+  const [selectedLevels, setSelectedLevels] = useState<string[]>([]);
+  const [selectedPayment, setSelectedPayment] = useState<string[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   
   // Search states
   const [searchQuery, setSearchQuery] = useState('');
   const [searchLocation, setSearchLocation] = useState('');
   
+  // Sort state
+  const [sortBy, setSortBy] = useState('Recently Listed');
+  
   // Jobs state
   const [jobs, setJobs] = useState<Job[]>([]);
 
-  // Mock data - EXACT from specification
+  // Mock job data
   useEffect(() => {
-    console.log('Loading mock jobs...');
     const mockJobs: Job[] = [
-      {
-        id: 1,
-        title: 'E-commerce Mobile App Design',
-        company: 'ShopEasy Inc.',
-        companyLogo: '🛒',
-        location: 'Remote',
-        salary: '$590 USD',
-        salaryType: 'Fixed Budget',
-        type: 'Intermediate',
-        postedDate: '8 days ago',
-        description: 'Looking for a talented mobile app designer to create a modern e-commerce app with intuitive user interface and smooth user experience. Must have experience with Figma and prototyping.',
-        proposals: 24,
-        tags: ['Intermediate', 'Fixed Budget', 'Mobile App Design'],
-        isSaved: false,
-        category: 'Mobile App Design'
-      },
-      {
-        id: 2,
-        title: 'React Dashboard Development',
-        company: 'TechCorp Solutions',
-        companyLogo: '⚛️',
-        location: 'New York, USA',
-        salary: '$24 USD / hour',
-        salaryType: 'Hourly Rate',
-        type: 'Advanced',
-        postedDate: '2 days ago',
-        description: 'Need experienced React developer to build admin dashboard with real-time analytics, charts, and user management. Experience with TypeScript, Chart.js, and REST APIs required.',
-        proposals: 18,
-        tags: ['Advanced', 'Hourly Rate', 'Website Development'],
-        isSaved: true,
-        category: 'Website Development'
-      },
-      {
-        id: 3,
-        title: 'Landing Page Copywriting',
-        company: 'GrowthHack Agency',
-        companyLogo: '📝',
-        location: 'Remote',
-        salary: '$350 USD',
-        salaryType: 'Fixed Budget',
-        type: 'Entry',
-        postedDate: '1 day ago',
-        description: 'Looking for a copywriter to create compelling landing page copy for SaaS product. Must understand conversion optimization and have portfolio of successful landing pages.',
-        proposals: 12,
-        tags: ['Entry', 'Fixed Budget', 'Copywriting'],
-        isSaved: false,
-        category: 'Copywriting'
-      },
-      {
-        id: 4,
-        title: 'Fitness App UI Design',
-        company: 'FitLife Tech',
-        companyLogo: '💪',
-        location: 'San Francisco, CA',
-        salary: '$45 USD / hour',
-        salaryType: 'Hourly Rate',
-        type: 'Intermediate',
-        postedDate: '5 days ago',
-        description: 'UI/UX designer needed for fitness tracking mobile application. Experience with health/fitness apps preferred. Must create wireframes, prototypes, and final designs.',
-        proposals: 31,
-        tags: ['Intermediate', 'Hourly Rate', 'Mobile App Design'],
-        isSaved: false,
-        category: 'Mobile App Design'
-      },
-      {
-        id: 5,
-        title: 'WordPress E-commerce Site',
-        company: 'Boutique Store',
-        companyLogo: '🛍️',
-        location: 'London, UK',
-        salary: '$750 USD',
-        salaryType: 'Fixed Budget',
-        type: 'Intermediate',
-        postedDate: '3 days ago',
-        description: 'Need WordPress developer to build e-commerce website with WooCommerce integration. Custom theme development, payment gateway setup, and SEO optimization required.',
-        proposals: 22,
-        tags: ['Intermediate', 'Fixed Budget', 'Website Development'],
-        isSaved: false,
-        category: 'Website Development'
-      },
-      {
-        id: 6,
-        title: 'Social Media Graphics',
-        company: 'Digital Marketing Co.',
-        companyLogo: '🎨',
-        location: 'Remote',
-        salary: '$280 USD',
-        salaryType: 'Fixed Budget',
-        type: 'Entry',
-        postedDate: '6 days ago',
-        description: 'Graphic designer needed for social media campaign assets including Instagram posts, stories, and Facebook ads. Must have experience with Adobe Creative Suite.',
-        proposals: 15,
-        tags: ['Entry', 'Fixed Budget', 'Website Design'],
-        isSaved: true,
-        category: 'Website Design'
-      },
-      {
-        id: 7,
-        title: 'Full-Stack Development',
-        company: 'StartupXYZ',
-        companyLogo: '🚀',
-        location: 'Remote',
-        salary: '$65 USD / hour',
-        salaryType: 'Hourly Rate',
-        type: 'Advanced',
-        postedDate: '12 days ago',
-        description: 'Full-stack developer needed for building a complete web application from scratch. Must know React, Node.js, and PostgreSQL.',
-        proposals: 8,
-        tags: ['Advanced', 'Hourly Rate', 'Website Development'],
-        isSaved: false,
-        category: 'Website Development'
-      },
-      {
-        id: 8,
-        title: 'Logo Design Package',
-        company: 'BrandNew Co.',
-        companyLogo: '🎯',
-        location: 'Remote',
-        salary: '$500 USD',
-        salaryType: 'Fixed Budget',
-        type: 'Entry',
-        postedDate: '4 days ago',
-        description: 'Need logo design for new company. Looking for modern, minimalist design that represents innovation and technology.',
-        proposals: 42,
-        tags: ['Entry', 'Fixed Budget', 'Website Design'],
-        isSaved: false,
-        category: 'Website Design'
-      },
-    ];
-    
-    console.log('Mock jobs loaded:', mockJobs.length, 'jobs');
+  {
+    id: 1,
+    title: 'E-commerce Mobile App Design',
+    company: 'ShopEasy Inc.',
+    companyLogo: '🛒',
+    location: 'Remote',
+    salary: ' 590',
+    salaryType: 'Fixed Budget',
+    type: 'Intermediate',
+    postedDate: '1 day ago',
+    description: 'Looking for a talented mobile app designer to create a modern e-commerce app with intuitive user interface and smooth user experience. Must have experience with Figma and prototyping.',
+    proposals: 24,
+    tags: ['Intermediate', 'Fixed Budget', 'Mobile App Design'],
+    isSaved: false,
+    category: 'Mobile App Design'
+  },
+  {
+    id: 2,
+    title: 'React Dashboard Development',
+    company: 'TechCorp Solutions',
+    companyLogo: '⚛️',
+    location: 'New York, USA',
+    salary: ' 24 ',
+    salaryType: 'Hourly Rate',
+    type: 'Advanced',
+    postedDate: '2 days ago',
+    description: 'Need experienced React developer to build admin dashboard with real-time analytics, charts, and user management. Experience with TypeScript, Chart.js, and REST APIs required.',
+    proposals: 18,
+    tags: ['Advanced', 'Hourly Rate', 'Website Development'],
+    isSaved: true,
+    category: 'Website Development'
+  },
+  {
+    id: 3,
+    title: 'Landing Page Copywriting',
+    company: 'GrowthHack Agency',
+    companyLogo: '📝',
+    location: 'Remote',
+    salary: ' 350',
+    salaryType: 'Fixed Budget',
+    type: 'Entry',
+    postedDate: '8 days ago',
+    description: 'Looking for a copywriter to create compelling landing page copy for SaaS product. Must understand conversion optimization and have portfolio of successful landing pages.',
+    proposals: 12,
+    tags: ['Entry', 'Fixed Budget', 'Copywriting'],
+    isSaved: false,
+    category: 'Copywriting'
+  },
+  {
+    id: 4,
+    title: 'Fitness App UI Design',
+    company: 'FitLife Tech',
+    companyLogo: '💪',
+    location: 'San Francisco, CA',
+    salary: ' 45 ',
+    salaryType: 'Hourly Rate',
+    type: 'Intermediate',
+    postedDate: '3 days ago',
+    description: 'UI/UX designer needed for fitness tracking mobile application. Experience with health/fitness apps preferred. Must create wireframes, prototypes, and final designs.',
+    proposals: 31,
+    tags: ['Intermediate', 'Hourly Rate', 'Mobile App Design'],
+    isSaved: false,
+    category: 'Mobile App Design'
+  },
+  {
+    id: 5,
+    title: 'WordPress E-commerce Site',
+    company: 'Boutique Store',
+    companyLogo: '🛍️',
+    location: 'London, UK',
+    salary: ' 750',
+    salaryType: 'Fixed Budget',
+    type: 'Intermediate',
+    postedDate: '5 days ago',
+    description: 'Need WordPress developer to build e-commerce website with WooCommerce integration. Custom theme development, payment gateway setup, and SEO optimization required.',
+    proposals: 22,
+    tags: ['Intermediate', 'Fixed Budget', 'Website Development'],
+    isSaved: false,
+    category: 'Website Development'
+  },
+  {
+    id: 6,
+    title: 'Social Media Graphics',
+    company: 'Digital Marketing Co.',
+    companyLogo: '🎨',
+    location: 'Remote',
+    salary: ' 280',
+    salaryType: 'Fixed Budget',
+    type: 'Entry',
+    postedDate: '6 days ago',
+    description: 'Graphic designer needed for social media campaign assets including Instagram posts, stories, and Facebook ads. Must have experience with Adobe Creative Suite.',
+    proposals: 15,
+    tags: ['Entry', 'Fixed Budget', 'Website Design'],
+    isSaved: true,
+    category: 'Website Design'
+  },
+  {
+    id: 7,
+    title: 'Full-Stack Development',
+    company: 'StartupXYZ',
+    companyLogo: '🚀',
+    location: 'Remote',
+    salary: ' 65',
+    salaryType: 'Hourly Rate',
+    type: 'Advanced',
+    postedDate: '12 days ago',
+    description: 'Full-stack developer needed for building a complete web application from scratch. Must know React, Node.js, and PostgreSQL.',
+    proposals: 8,
+    tags: ['Advanced', 'Hourly Rate', 'Website Development'],
+    isSaved: false,
+    category: 'Website Development'
+  },
+  {
+    id: 8,
+    title: 'Logo Design Package',
+    company: 'BrandNew Co.',
+    companyLogo: '🎯',
+    location: 'Remote',
+    salary: ' 500',
+    salaryType: 'Fixed Budget',
+    type: 'Entry',
+    postedDate: '4 days ago',
+    description: 'Need logo design for new company. Looking for modern, minimalist design that represents innovation and technology.',
+    proposals: 42,
+    tags: ['Entry', 'Fixed Budget', 'Website Design'],
+    isSaved: false,
+    category: 'Website Design'
+  },
+];
     setJobs(mockJobs);
   }, []);
 
-  // Helper function to parse salary to number
+  // Helper functions for sorting
   const parseSalaryToNumber = (salary: string): number => {
-    // Remove currency symbols, commas, and text
     const numericString = salary.replace(/[^0-9.]/g, '');
     return parseFloat(numericString) || 0;
   };
 
-  // Helper function to parse posted date to days
   const parsePostedDateToDays = (postedDate: string): number => {
     const match = postedDate.match(/(\d+)\s+days?/i);
-    if (match) {
-      return parseInt(match[1], 10);
-    }
-    return 999; // If can't parse, put at the end
+    if (match) return parseInt(match[1], 10);
+    return 999;
   };
 
-  // Sort and filter jobs using useMemo for performance
+  // Filter and sort jobs
   const filteredAndSortedJobs = useMemo(() => {
-    console.log('Sorting by:', sortBy);
-    console.log('Search query:', searchQuery);
-    console.log('Search location:', searchLocation);
-    
-    // First, filter the jobs
     let result = jobs.filter(job => {
       // Filter by experience level
       if (selectedLevels.length > 0 && !selectedLevels.includes(job.type)) {
@@ -223,100 +213,62 @@ const JobsPage: React.FC = () => {
       return true;
     });
 
-    // Then, sort based on the selected option
+    // Sort based on selected option
     switch (sortBy) {
       case 'Recently Listed':
-        // Sort by most recent (lowest days ago)
-        result.sort((a, b) => {
-          const daysA = parsePostedDateToDays(a.postedDate);
-          const daysB = parsePostedDateToDays(b.postedDate);
-          return daysA - daysB; // Lower days = more recent
-        });
+        result.sort((a, b) => parsePostedDateToDays(a.postedDate) - parsePostedDateToDays(b.postedDate));
         break;
-
       case 'Most Proposals':
-        // Sort by highest proposals
         result.sort((a, b) => b.proposals - a.proposals);
         break;
-
       case 'Highest Budget':
-        // Sort by highest salary/budget
         result.sort((a, b) => {
           const salaryA = parseSalaryToNumber(a.salary);
           const salaryB = parseSalaryToNumber(b.salary);
           
-          // For hourly rates, we need to make them comparable
-          // Let's assume 40 hours per week for comparison
+          // Handle hourly vs fixed comparison
           if (a.salaryType === 'Hourly Rate' && b.salaryType === 'Hourly Rate') {
-            return salaryB - salaryA; // Higher hourly rate = higher budget
+            return salaryB - salaryA;
           } else if (a.salaryType === 'Hourly Rate') {
-            // Compare hourly (assuming 40 hours) vs fixed
             const hourlyAsWeekly = salaryA * 40;
             return hourlyAsWeekly > salaryB ? -1 : 1;
           } else if (b.salaryType === 'Hourly Rate') {
-            // Compare fixed vs hourly (assuming 40 hours)
             const hourlyAsWeekly = salaryB * 40;
             return salaryA > hourlyAsWeekly ? -1 : 1;
           } else {
-            // Both are fixed budget
             return salaryB - salaryA;
           }
         });
         break;
-
       case 'Most Relevant':
-        // Sort by combination of factors: recency + proposals + saved status + search relevance
+        // Combined scoring: recency + proposals + saved status
         result.sort((a, b) => {
           let scoreA = 0;
           let scoreB = 0;
           
-          // Recency score (more recent = higher score)
+          // Recency score
           const daysA = parsePostedDateToDays(a.postedDate);
           const daysB = parsePostedDateToDays(b.postedDate);
-          scoreA += (30 - Math.min(daysA, 30)) * 10; // Max 30 days old
+          scoreA += (30 - Math.min(daysA, 30)) * 10;
           scoreB += (30 - Math.min(daysB, 30)) * 10;
           
-          // Proposal score (more proposals = higher score)
+          // Proposal score
           scoreA += a.proposals * 2;
           scoreB += b.proposals * 2;
           
-          // Salary score (higher salary = higher score)
-          const salaryA = parseSalaryToNumber(a.salary);
-          const salaryB = parseSalaryToNumber(b.salary);
-          scoreA += salaryA / 10; // Scale down for balanced scoring
-          scoreB += salaryB / 10;
-          
-          // Saved status bonus (saved jobs get bonus)
+          // Saved status bonus
           if (a.isSaved) scoreA += 50;
           if (b.isSaved) scoreB += 50;
           
-          // Search relevance bonus (exact matches in title get highest bonus)
-          if (searchQuery) {
-            const query = searchQuery.toLowerCase();
-            if (a.title.toLowerCase().includes(query)) scoreA += 100;
-            if (b.title.toLowerCase().includes(query)) scoreB += 100;
-            if (a.company.toLowerCase().includes(query)) scoreA += 75;
-            if (b.company.toLowerCase().includes(query)) scoreB += 75;
-          }
-          
-          return scoreB - scoreA; // Higher score = more relevant
+          return scoreB - scoreA;
         });
         break;
-
-      default:
-        // Default: Recently Listed
-        result.sort((a, b) => {
-          const daysA = parsePostedDateToDays(a.postedDate);
-          const daysB = parsePostedDateToDays(b.postedDate);
-          return daysA - daysB;
-        });
     }
 
-    console.log('Filtered and sorted jobs count:', result.length);
     return result;
   }, [jobs, selectedLevels, selectedPayment, selectedCategories, sortBy, searchQuery, searchLocation]);
 
-  // Handle filter toggles
+  // Event handlers
   const handleLevelToggle = (level: string) => {
     setSelectedLevels(prev =>
       prev.includes(level)
@@ -357,15 +309,13 @@ const JobsPage: React.FC = () => {
     );
   };
 
-  const handleSortChange = (value: string) => {
-    console.log('Changing sort to:', value);
-    setSortBy(value);
-  };
-
   const handleSearch = (query: string, location: string) => {
-    console.log('Search triggered:', { query, location });
     setSearchQuery(query);
     setSearchLocation(location);
+  };
+
+  const handleSortChange = (value: string) => {
+    setSortBy(value);
   };
 
   // Check if any filters are active
@@ -376,103 +326,51 @@ const JobsPage: React.FC = () => {
     searchQuery ||
     searchLocation;
 
+  // Active filter count
+  const activeFilterCount = 
+    selectedLevels.length + 
+    selectedPayment.length + 
+    selectedCategories.length + 
+    (searchQuery ? 1 : 0) + 
+    (searchLocation ? 1 : 0);
+
   return (
-    <div>
+    <div className="min-h-screen bg-bg-light pb-16 md:pb-0">
       <Header />
       <HeroSection onSearch={handleSearch} />
       
-      {/* Main Content */}
-      <div style={{ 
-        maxWidth: '1200px', 
-        margin: '2rem auto', 
-        padding: '0 2rem' 
-      }}>
+      <div className="max-w-8xl mx-auto px-4 md:px-8 py-6 md:py-8">
         {/* Page Header with Clear All button */}
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: '2rem'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <h2 style={{
-              fontSize: '1.5rem',
-              fontWeight: 700,
-              color: 'var(--color-text-primary)'
-            }}>
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 md:mb-8">
+          <div className="flex flex-col md:flex-row md:items-center gap-3">
+            <h2 className="text-xl md:text-2xl font-bold text-text-primary">
               Recommended Jobs
             </h2>
             
             {/* Active filters badge */}
             {hasActiveFilters && (
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                background: 'var(--color-bg-light)',
-                padding: '0.25rem 0.75rem',
-                borderRadius: 'var(--radius-pill)',
-                fontSize: '0.875rem',
-                color: 'var(--color-text-secondary)'
-              }}>
-                <Filter size={14} />
-                <span>
-                  {selectedLevels.length + selectedPayment.length + selectedCategories.length + 
-                   (searchQuery ? 1 : 0) + (searchLocation ? 1 : 0)} active filters
+              <div className="flex items-center gap-2 bg-bg-light px-3 py-1.5 rounded-full">
+                <Filter size={14} className="text-text-secondary" />
+                <span className="text-sm text-text-secondary">
+                  {activeFilterCount} active filter{activeFilterCount !== 1 ? 's' : ''}
                 </span>
                 <button
                   onClick={handleClearAllFilters}
-                  style={{
-                    background: 'none',
-                    border: 'none',
-                    color: 'var(--color-text-light)',
-                    cursor: 'pointer',
-                    padding: '0.125rem',
-                    borderRadius: '50%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    transition: 'var(--transition)'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'white';
-                    e.currentTarget.style.color = 'var(--color-text-primary)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'none';
-                    e.currentTarget.style.color = 'var(--color-text-light)';
-                  }}
+                  className="text-text-light hover:text-text-primary p-0.5 rounded-full hover:bg-white"
                 >
-                  <X size={12} />
+                  <X size={14} />
                 </button>
               </div>
             )}
           </div>
           
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <div className="flex flex-col sm:flex-row gap-3">
             {/* Sort Dropdown */}
-            <div style={{ position: 'relative', display: 'inline-block' }}>
+            <div className="relative self-start">
               <select
                 value={sortBy}
                 onChange={(e) => handleSortChange(e.target.value)}
-                style={{
-                  appearance: 'none',
-                  background: 'white',
-                  border: '1px solid var(--color-border)',
-                  borderRadius: 'var(--radius-pill)',
-                  padding: '0.5rem 2.5rem 0.5rem 1rem',
-                  fontSize: '0.875rem',
-                  color: 'var(--color-text-primary)',
-                  cursor: 'pointer',
-                  minWidth: '140px',
-                  transition: 'var(--transition)'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = 'var(--color-text-light)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = 'var(--color-border)';
-                }}
+                className="appearance-none bg-white border border-border rounded-full py-2 pl-4 pr-10 text-sm text-text-primary cursor-pointer w-full md:w-auto min-w-[140px] transition-colors hover:border-text-light"
               >
                 <option value="Recently Listed">Recently Listed</option>
                 <option value="Most Proposals">Most Proposals</option>
@@ -481,14 +379,7 @@ const JobsPage: React.FC = () => {
               </select>
               <ChevronDown 
                 size={16} 
-                style={{
-                  position: 'absolute',
-                  right: '12px',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  color: 'var(--color-text-secondary)',
-                  pointerEvents: 'none'
-                }} 
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-text-secondary pointer-events-none"
               />
             </div>
 
@@ -496,30 +387,7 @@ const JobsPage: React.FC = () => {
             {hasActiveFilters && (
               <button
                 onClick={handleClearAllFilters}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.5rem',
-                  background: 'var(--color-bg-light)',
-                  color: 'var(--color-text-primary)',
-                  border: '1px solid var(--color-border)',
-                  borderRadius: 'var(--radius-md)',
-                  padding: '0.5rem 1rem',
-                  fontSize: '0.875rem',
-                  fontWeight: 500,
-                  cursor: 'pointer',
-                  transition: 'var(--transition)'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = 'white';
-                  e.currentTarget.style.borderColor = 'var(--color-text-light)';
-                  e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = 'var(--color-bg-light)';
-                  e.currentTarget.style.borderColor = 'var(--color-border)';
-                  e.currentTarget.style.boxShadow = 'none';
-                }}
+                className="flex items-center gap-2 bg-bg-light text-text-primary border border-border rounded-md px-4 py-2 text-sm font-medium cursor-pointer transition-colors hover:bg-white hover:border-text-light whitespace-nowrap"
               >
                 <X size={14} />
                 Clear All
@@ -530,23 +398,12 @@ const JobsPage: React.FC = () => {
 
         {/* Search status */}
         {(searchQuery || searchLocation) && (
-          <div style={{
-            background: 'var(--color-bg-light)',
-            padding: '1rem',
-            borderRadius: 'var(--radius-lg)',
-            marginBottom: '1.5rem',
-            border: '1px solid var(--color-border-light)',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center'
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-              <Search size={16} color="var(--color-text-secondary)" />
+          <div className="bg-bg-light p-4 rounded-xl border border-border-light mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+            <div className="flex items-center gap-3">
+              <SearchIcon size={16} className="text-text-secondary" />
               <div>
-                <div style={{ fontSize: '0.875rem', color: 'var(--color-text-primary)', fontWeight: 500 }}>
-                  Search Results
-                </div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)' }}>
+                <div className="text-sm font-medium text-text-primary">Search Results</div>
+                <div className="text-xs text-text-secondary">
                   {searchQuery && `Jobs matching "${searchQuery}"`}
                   {searchQuery && searchLocation && ' • '}
                   {searchLocation && `Location: ${searchLocation}`}
@@ -558,27 +415,7 @@ const JobsPage: React.FC = () => {
                 setSearchQuery('');
                 setSearchLocation('');
               }}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.25rem',
-                background: 'none',
-                border: '1px solid var(--color-border)',
-                color: 'var(--color-text-secondary)',
-                borderRadius: 'var(--radius-sm)',
-                padding: '0.25rem 0.75rem',
-                fontSize: '0.75rem',
-                cursor: 'pointer',
-                transition: 'var(--transition)'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'white';
-                e.currentTarget.style.color = 'var(--color-text-primary)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'none';
-                e.currentTarget.style.color = 'var(--color-text-secondary)';
-              }}
+              className="flex items-center gap-1 bg-white border border-border text-text-secondary rounded-md px-3 py-1.5 text-xs cursor-pointer transition-colors hover:bg-bg-light hover:text-text-primary"
             >
               <X size={12} />
               Clear Search
@@ -587,46 +424,30 @@ const JobsPage: React.FC = () => {
         )}
 
         {/* Two-Column Layout */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: '250px 1fr',
-          gap: '2rem',
-          minHeight: '600px'
-        }}>
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 md:gap-8">
           {/* Left Sidebar - Filters */}
-          <SidebarFilters
-            selectedLevels={selectedLevels}
-            selectedPayment={selectedPayment}
-            selectedCategories={selectedCategories}
-            onLevelToggle={handleLevelToggle}
-            onPaymentToggle={handlePaymentToggle}
-            onCategoryToggle={handleCategoryToggle}
-            onClearAll={handleClearAllFilters}
-          />
-
+          <div className="lg:col-span-1">
+            <SidebarFilters
+              selectedLevels={selectedLevels}
+              selectedPayment={selectedPayment}
+              selectedCategories={selectedCategories}
+              onLevelToggle={handleLevelToggle}
+              onPaymentToggle={handlePaymentToggle}
+              onCategoryToggle={handleCategoryToggle}
+              onClearAll={handleClearAllFilters}
+              hasActiveFilters={hasActiveFilters}
+            />
+          </div>
+          
           {/* Right Grid - Job Cards */}
-          <div>
+          <div className="lg:col-span-3">
             {filteredAndSortedJobs.length === 0 ? (
-              <div style={{
-                background: 'white',
-                padding: '3rem',
-                borderRadius: '12px',
-                textAlign: 'center',
-                boxShadow: 'var(--shadow-sm)',
-                border: '1px solid var(--color-border-light)'
-              }}>
-                <h3 style={{ 
-                  marginBottom: '1rem', 
-                  color: 'var(--color-text-primary)',
-                  fontSize: '1.25rem'
-                }}>
+              <div className="bg-white p-8 md:p-12 rounded-xl text-center border border-border-light">
+                <div className="text-4xl mb-4">🔍</div>
+                <h3 className="text-lg md:text-xl font-semibold text-text-primary mb-2">
                   No jobs found
                 </h3>
-                <p style={{ 
-                  color: 'var(--color-text-secondary)', 
-                  marginBottom: '2rem',
-                  fontSize: '0.875rem'
-                }}>
+                <p className="text-text-secondary mb-6 max-w-md mx-auto">
                   {hasActiveFilters 
                     ? 'Try adjusting your filters or search criteria'
                     : 'No jobs available at the moment'}
@@ -634,63 +455,33 @@ const JobsPage: React.FC = () => {
                 {hasActiveFilters && (
                   <button
                     onClick={handleClearAllFilters}
-                    style={{
-                      background: 'var(--color-accent-green)',
-                      color: 'var(--color-text-primary)',
-                      border: 'none',
-                      padding: '0.75rem 2rem',
-                      borderRadius: '6px',
-                      fontWeight: '600',
-                      cursor: 'pointer',
-                      fontSize: '0.875rem',
-                      transition: 'var(--transition)'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = 'translateY(-1px)';
-                      e.currentTarget.style.boxShadow = 'var(--shadow-md)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = 'translateY(0)';
-                      e.currentTarget.style.boxShadow = 'none';
-                    }}
+                    className="bg-accent-green text-text-primary border-none px-6 py-3 rounded-md text-sm font-semibold cursor-pointer transition-all hover:bg-accent-green-dark hover:-translate-y-0.5 inline-flex items-center gap-2"
                   >
+                    <X size={16} />
                     Clear All Filters
                   </button>
                 )}
               </div>
             ) : (
-              <div>
+              <>
                 {/* Results info */}
-                <div style={{
-                  marginBottom: '1rem',
-                  padding: '0.75rem',
-                  background: 'white',
-                  borderRadius: 'var(--radius-lg)',
-                  border: '1px solid var(--color-border-light)',
-                  fontSize: '0.875rem',
-                  color: 'var(--color-text-secondary)',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center'
-                }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <span style={{ fontWeight: 500, color: 'var(--color-text-primary)' }}>
+                <div className="bg-white p-4 rounded-xl border border-border-light mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="text-sm font-medium text-text-primary">
                       {filteredAndSortedJobs.length} {filteredAndSortedJobs.length === 1 ? 'job' : 'jobs'} found
                     </span>
-                    <span style={{ color: 'var(--color-border)' }}>•</span>
-                    <span>Sorted by: <strong style={{ color: 'var(--color-accent-green)' }}>{sortBy}</strong></span>
+                    <span className="text-border hidden sm:block">•</span>
+                    <span className="text-xs text-text-secondary">
+                      Sorted by: <span className="text-accent-green font-medium">{sortBy}</span>
+                    </span>
                   </div>
-                  <div style={{ fontSize: '0.75rem' }}>
+                  <div className="text-xs text-text-light">
                     Click dropdown to change sort order
                   </div>
                 </div>
 
                 {/* Jobs Grid */}
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(2, 1fr)',
-                  gap: '1.5rem'
-                }}>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                   {filteredAndSortedJobs.map(job => (
                     <JobCard
                       key={job.id}
@@ -699,7 +490,7 @@ const JobsPage: React.FC = () => {
                     />
                   ))}
                 </div>
-              </div>
+              </>
             )}
           </div>
         </div>
