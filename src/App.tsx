@@ -1,3 +1,4 @@
+// App.tsx - Add BillingPage import and route
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
@@ -11,6 +12,8 @@ import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import ProfilePage from './pages/ProfilePage';
+import BillingPage from './pages/BillingPage'; // ADD THIS IMPORT
 import './index.css';
 
 const App: React.FC = () => {
@@ -35,6 +38,19 @@ const App: React.FC = () => {
             <Route path="/post-job" element={
               <ProtectedRoute requiredRole="client">
                 <PostJobPage />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/profile" element={
+              <ProtectedRoute>
+                <ProfilePage />
+              </ProtectedRoute>
+            } />
+            
+            {/* BILLING PAGE ROUTE - ADD THIS */}
+            <Route path="/billing" element={
+              <ProtectedRoute>
+                <BillingPage />
               </ProtectedRoute>
             } />
             

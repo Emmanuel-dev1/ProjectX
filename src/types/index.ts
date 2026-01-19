@@ -1,23 +1,19 @@
-export interface Notification {
-  id: number;
-  title: string;
-  description: string;
-  time: string;
-  read: boolean;
-  type: 'job' | 'proposal' | 'payment' | 'message';
-}
-
+// types/index.ts
 export interface User {
   id: string;
   name: string;
   email: string;
   role: 'client' | 'freelancer';
-  avatar?: string;
+  avatarInitials: string;
+  profileImage?: string;
+  phone?: string;
+  location?: string;
+  website?: string;
+  title?: string;
+  bio?: string;
+  skills?: string[];
 }
 
-// Add any other existing interfaces below...
-
-// Job types
 export interface Job {
   id: number;
   title: string;
@@ -35,7 +31,6 @@ export interface Job {
   category: 'Website Design' | 'Mobile App Design' | 'Website Development' | 'Mobile App Development' | 'Copywriting';
 }
 
-// Notification types
 export interface Notification {
   id: number;
   title: string;
@@ -45,15 +40,6 @@ export interface Notification {
   type: 'job' | 'proposal' | 'payment' | 'message';
 }
 
-// User types
-export interface User {
-  name: string;
-  email: string;
-  role: string;
-  avatarInitials: string;
-}
-
-// Filter types
 export interface FilterState {
   experienceLevels: string[];
   paymentTypes: string[];

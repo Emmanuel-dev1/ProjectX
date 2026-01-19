@@ -1,4 +1,4 @@
-// components/Header.tsx - Minimal fix
+// components/Header.tsx
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { 
@@ -157,15 +157,14 @@ const Header: React.FC = () => {
     { code: 'ja', name: '日本語', flag: '🇯🇵' },
   ];
 
-  // User menu options
-  const userMenuOptions = [
-    { icon: <User size={16} />, label: 'My Profile', action: () => alert('Opening profile...') },
-    { icon: <Briefcase size={16} />, label: 'My Jobs', action: () => alert('Opening jobs...') },
-    { icon: <CreditCard size={16} />, label: 'Billing & Payments', action: () => alert('Opening billing...') },
-    { icon: <Settings size={16} />, label: 'Settings', action: () => alert('Opening settings...') },
-    { icon: <HelpCircle size={16} />, label: 'Help & Support', action: () => navigate('/support') },
-  ];
-
+  // User menu options - UPDATED: Removed "My Profile" since we have the "View Profile" button
+  // In Header.tsx, update the userMenuOptions array:
+const userMenuOptions = [
+  { icon: <Briefcase size={16} />, label: 'My Jobs', action: () => alert('Opening jobs...') },
+  { icon: <CreditCard size={16} />, label: 'Billing & Payments', action: () => navigate('/billing') }, // UPDATED
+  { icon: <Settings size={16} />, label: 'Settings', action: () => alert('Opening settings...') },
+  { icon: <HelpCircle size={16} />, label: 'Help & Support', action: () => navigate('/support') },
+];
   // Handle logout
   const handleLogout = () => {
     logout();
@@ -196,6 +195,13 @@ const Header: React.FC = () => {
   };
 
   const userDisplay = getUserDisplayInfo();
+
+  // Handle profile navigation
+  const handleProfileClick = () => {
+    navigate('/profile');
+    setUserMenuOpen(false);
+    setMobileMenuOpen(false);
+  };
 
   return (
     <header className={`sticky top-0 z-50 shadow-header transition-colors duration-300 ${
@@ -446,8 +452,18 @@ const Header: React.FC = () => {
                 }`}
               >
                 {/* Avatar */}
-                <div className="w-8 h-8 bg-user-avatar rounded-full flex items-center justify-center text-xs font-semibold text-white">
-                  {userDisplay.initials}
+                <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold text-white overflow-hidden bg-user-avatar">
+                  {user?.profileImage ? (
+                    <img 
+                      src={user.profileImage} 
+                      alt={user.name} 
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <span className="bg-gradient-to-br from-blue-500 to-purple-600 w-full h-full flex items-center justify-center">
+                      {userDisplay.initials}
+                    </span>
+                  )}
                 </div>
                 
                 {/* User info */}
@@ -480,7 +496,7 @@ const Header: React.FC = () => {
                     ? 'bg-gray-900 border-gray-700'
                     : 'bg-white border-gray-200'
                 }`}>
-                  {/* User Info Header */}
+                  {/* User Info Header - View Profile Button */}
                   <div className={`px-4 sm:px-5 py-4 border-b ${
                     theme === 'dark'
                       ? 'bg-gray-800 border-gray-700'
@@ -503,20 +519,19 @@ const Header: React.FC = () => {
                         </div>
                       </div>
                     </div>
-                    <Link
-                      to="/profile"
-                      className={`block text-center border rounded-md py-2 text-xs font-medium transition-colors ${
+                    <button
+                      onClick={handleProfileClick}
+                      className={`w-full text-center py-2 text-xs font-medium rounded-md transition-all duration-200 ${
                         theme === 'dark'
-                          ? 'bg-gray-800 text-white border-gray-600 hover:bg-gray-700 hover:border-accent-green'
-                          : 'bg-white text-gray-900 border-gray-300 hover:bg-gray-100 hover:border-accent-green'
+                          ? 'bg-accent-green text-gray-900 hover:bg-green-400 border border-accent-green'
+                          : 'bg-accent-green text-gray-900 hover:bg-green-400 border border-accent-green'
                       }`}
-                      onClick={() => setUserMenuOpen(false)}
                     >
                       View Profile
-                    </Link>
+                    </button>
                   </div>
 
-                  {/* User Menu Options */}
+                  {/* User Menu Options - REMOVED "My Profile" option */}
                   <div className="py-2 max-h-[50vh] overflow-y-auto custom-scrollbar">
                     {userMenuOptions.map((option, index) => (
                       <button
@@ -534,7 +549,9 @@ const Header: React.FC = () => {
                         <div className={theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}>
                           {option.icon}
                         </div>
-                        <span className="flex-1">{option.label}</span>
+                        <span className={`flex-1 ${theme === 'dark' ? 'text-gray-200' : 'text-gray-700'}`}>
+                          {option.label}
+                        </span>
                         {option.label === 'Help & Support' && location.pathname === '/support' && (
                           <span className="w-2 h-2 bg-accent-green rounded-full animate-pulse"></span>
                         )}
@@ -756,17 +773,16 @@ const Header: React.FC = () => {
                   </div>
                   
                   <div className="grid grid-cols-2 gap-2 px-4 mt-2">
-                    <Link
-                      to="/profile"
-                      onClick={() => setMobileMenuOpen(false)}
-                      className={`text-center border rounded-md py-2 text-xs font-medium transition-colors ${
+                    <button
+                      onClick={handleProfileClick}
+                      className={`text-center py-2 text-xs font-medium rounded-md transition-all duration-200 ${
                         theme === 'dark'
-                          ? 'bg-white/10 text-white border-white/20 hover:bg-white/20'
-                          : 'bg-gray-100 text-gray-900 border-gray-300 hover:bg-gray-200'
+                          ? 'bg-accent-green text-gray-900 hover:bg-green-400 border border-accent-green'
+                          : 'bg-accent-green text-gray-900 hover:bg-green-400 border border-accent-green'
                       }`}
                     >
-                      Profile
-                    </Link>
+                      View Profile
+                    </button>
                     <button
                       onClick={handleLogout}
                       className="text-center bg-red-500/20 text-red-300 border border-red-500/30 rounded-md py-2 text-xs font-medium hover:bg-red-500/30 transition-colors"
@@ -837,16 +853,16 @@ const Header: React.FC = () => {
           
           {isAuthenticated ? (
             <button 
-              onClick={() => setUserMenuOpen(!userMenuOpen)}
+              onClick={handleProfileClick}
               className={`flex flex-col items-center p-2 transition-all relative ${
-                userMenuOpen 
+                location.pathname === '/profile'
                   ? theme === 'dark' ? 'text-white' : 'text-gray-900'
                   : theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
               }`}
             >
               <User size={20} />
               <span className="text-xs mt-1">Profile</span>
-              {userMenuOpen && (
+              {location.pathname === '/profile' && (
                 <div className="absolute top-0 w-full h-0.5 bg-accent-green rounded-t-full"></div>
               )}
             </button>

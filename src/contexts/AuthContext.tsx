@@ -1,12 +1,8 @@
+// contexts/AuthContext.tsx - FIXED VERSION
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: 'client' | 'freelancer';
-  avatar?: string;
-}
+// Import your existing types
+import { User } from '../types/index'; // Assuming you have this
 
 export interface AuthState {
   user: User | null;
@@ -74,17 +70,28 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     // Simulate API call delay
     await new Promise(resolve => setTimeout(resolve, 1000));
     
-    // Mock authentication - in a real app, this would be an API call
-    // For demo purposes, we'll create a mock user based on email
+    // Mock authentication
     const mockUser: User = {
       id: Date.now().toString(),
       name: email === 'client@example.com' ? 'Client Demo' : 
             email === 'freelancer@example.com' ? 'Freelancer Demo' : 'Demo User',
       email,
       role: email === 'client@example.com' ? 'client' : 'freelancer',
+      avatarInitials: email === 'client@example.com' ? 'CD' : 
+                     email === 'freelancer@example.com' ? 'FD' : 'DU',
+      profileImage: undefined,
+      phone: '+233 00 000 0000',
+      location: 'Accra, Ghana',
+      website: 'yourwebsite.com',
+      title: email === 'client@example.com' ? 'Project Manager' : 'Full Stack Developer',
+      bio: email === 'client@example.com' 
+        ? 'Looking for talented developers to bring my projects to life.'
+        : 'Passionate about creating amazing digital experiences. Open to new opportunities.',
+      skills: email === 'client@example.com' 
+        ? ['Project Management', 'Team Leadership', 'Agile']
+        : ['React', 'Node.js', 'TypeScript', 'UI/UX Design'],
     };
     
-    // Store user in localStorage
     localStorage.setItem('projectx_user', JSON.stringify(mockUser));
     
     if (rememberMe) {
@@ -101,17 +108,25 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const register = async (name: string, email: string, password: string, role: 'client' | 'freelancer') => {
     setAuthState(prev => ({ ...prev, isLoading: true }));
     
-    // Simulate API call delay
     await new Promise(resolve => setTimeout(resolve, 1500));
+    
+    const initials = name.split(' ').map(n => n[0]).join('').toUpperCase();
     
     const newUser: User = {
       id: Date.now().toString(),
       name,
       email,
       role,
+      avatarInitials: initials,
+      profileImage: undefined,
+      phone: '',
+      location: '',
+      website: '',
+      title: role === 'client' ? 'Project Manager' : 'Developer',
+      bio: '',
+      skills: [],
     };
     
-    // Store user in localStorage
     localStorage.setItem('projectx_user', JSON.stringify(newUser));
     
     setAuthState({
