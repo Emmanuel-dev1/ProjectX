@@ -14,6 +14,7 @@ import RegisterPage from './pages/RegisterPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ProfilePage from './pages/ProfilePage';
 import BillingPage from './pages/BillingPage'; // ADD THIS IMPORT
+import SettingsPage from './pages/SettingsPage'; // ADD THIS IMPORT
 import './index.css';
 
 const App: React.FC = () => {
@@ -54,6 +55,13 @@ const App: React.FC = () => {
               </ProtectedRoute>
             } />
             
+            {/* SETTINGS PAGE ROUTE - ADD THIS */}
+            <Route path="/settings" element={
+              <ProtectedRoute>
+                <SettingsPage />
+              </ProtectedRoute>
+            } />
+
             {/* Semi-protected routes - Some functionality requires auth but page is accessible */}
             <Route path="/" element={<JobsPage />} />
             <Route path="/support" element={<SupportPage />} />

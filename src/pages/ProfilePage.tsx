@@ -38,6 +38,8 @@ const ProfilePage: React.FC = () => {
     user?.profileImage
   );
   const [isEditing, setIsEditing] = useState(false);
+  const [showSavePopup, setShowSavePopup] = useState(false);
+
   
   const [formData, setFormData] = useState({
     name: user?.name || '',
@@ -136,7 +138,7 @@ const ProfilePage: React.FC = () => {
         profileImage,
         avatarInitials: getUserInitials()
       });
-      alert('Profile updated successfully!');
+      setShowSavePopup(true);
     }
     setIsEditing(false);
   };
@@ -704,6 +706,30 @@ const ProfilePage: React.FC = () => {
               }`}>
                 {user?.role === 'client' ? 'Active Hires' : 'Active Projects'}
               </div>
+              {showSavePopup && (
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+    <div
+      className={`w-full max-w-sm rounded-xl p-6 shadow-lg ${
+        theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'
+      }`}
+    >
+      <h3 className="text-lg font-semibold mb-2">Profile Updated</h3>
+      <p className="text-sm mb-4">
+        Your profile has been updated successfully.
+      </p>
+
+      <div className="flex justify-end gap-2">
+        <button
+          onClick={() => setShowSavePopup(false)}
+          className="px-4 py-2 rounded-lg bg-accent-green text-gray-900 font-medium hover:bg-green-400 transition"
+        >
+          OK
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
             </div>
           </div>
         </div>

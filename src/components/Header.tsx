@@ -160,9 +160,10 @@ const Header: React.FC = () => {
   // User menu options - UPDATED: Removed "My Profile" since we have the "View Profile" button
   // In Header.tsx, update the userMenuOptions array:
 const userMenuOptions = [
+  { icon: <User size={16} />, label: 'My Profile', action: () => navigate('/profile') },
   { icon: <Briefcase size={16} />, label: 'My Jobs', action: () => alert('Opening jobs...') },
-  { icon: <CreditCard size={16} />, label: 'Billing & Payments', action: () => navigate('/billing') }, // UPDATED
-  { icon: <Settings size={16} />, label: 'Settings', action: () => alert('Opening settings...') },
+  { icon: <CreditCard size={16} />, label: 'Billing & Payments', action: () => navigate('/billing') },
+  { icon: <Settings size={16} />, label: 'Settings', action: () => navigate('/settings') }, // UPDATED
   { icon: <HelpCircle size={16} />, label: 'Help & Support', action: () => navigate('/support') },
 ];
   // Handle logout
