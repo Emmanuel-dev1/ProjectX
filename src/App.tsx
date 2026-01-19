@@ -15,7 +15,10 @@ import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ProfilePage from './pages/ProfilePage';
 import BillingPage from './pages/BillingPage'; // ADD THIS IMPORT
 import SettingsPage from './pages/SettingsPage'; // ADD THIS IMPORT
+import ClientProposalsPage from './pages/ClientProposalsPage';
+import Footer from './components/Footer';
 import './index.css';
+
 
 const App: React.FC = () => {
   return (
@@ -55,6 +58,12 @@ const App: React.FC = () => {
               </ProtectedRoute>
             } />
             
+            <Route path="/proposals" element={
+                <ProtectedRoute requiredRole="client">
+                  <ClientProposalsPage />
+                </ProtectedRoute>
+              } />
+
             {/* SETTINGS PAGE ROUTE - ADD THIS */}
             <Route path="/settings" element={
               <ProtectedRoute>
@@ -72,6 +81,7 @@ const App: React.FC = () => {
           </Routes>
         </AuthProvider>
       </Router>
+      <Footer />
     </ThemeProvider>
   );
 };

@@ -4,6 +4,8 @@ import Header from '../components/Header';
 import HeroSection from '../components/HeroSection';
 import SidebarFilters from '../components/SidebarFilters';
 import JobCard from '../components/JobCard';
+import ProposalModal from '../components/ProposalModal';
+import { useAuth } from '../contexts/AuthContext';
 import { Job } from '../types';
 
 const JobsPage: React.FC = () => {
@@ -22,138 +24,143 @@ const JobsPage: React.FC = () => {
   // Jobs state
   const [jobs, setJobs] = useState<Job[]>([]);
 
+  // Proposal modal states
+  const [selectedJob, setSelectedJob] = useState<Job | null>(null);
+  const [showProposalModal, setShowProposalModal] = useState(false);
+  const { user } = useAuth();
+
   // Mock job data
   useEffect(() => {
     const mockJobs: Job[] = [
-  {
-    id: 1,
-    title: 'E-commerce Mobile App Design',
-    company: 'ShopEasy Inc.',
-    companyLogo: '🛒',
-    location: 'Remote',
-    salary: ' 590',
-    salaryType: 'Fixed Budget',
-    type: 'Intermediate',
-    postedDate: '1 day ago',
-    description: 'Looking for a talented mobile app designer to create a modern e-commerce app with intuitive user interface and smooth user experience. Must have experience with Figma and prototyping.',
-    proposals: 24,
-    tags: ['Intermediate', 'Fixed Budget', 'Mobile App Design'],
-    isSaved: false,
-    category: 'Mobile App Design'
-  },
-  {
-    id: 2,
-    title: 'React Dashboard Development',
-    company: 'TechCorp Solutions',
-    companyLogo: '⚛️',
-    location: 'New York, USA',
-    salary: ' 24 ',
-    salaryType: 'Hourly Rate',
-    type: 'Advanced',
-    postedDate: '2 days ago',
-    description: 'Need experienced React developer to build admin dashboard with real-time analytics, charts, and user management. Experience with TypeScript, Chart.js, and REST APIs required.',
-    proposals: 18,
-    tags: ['Advanced', 'Hourly Rate', 'Website Development'],
-    isSaved: true,
-    category: 'Website Development'
-  },
-  {
-    id: 3,
-    title: 'Landing Page Copywriting',
-    company: 'GrowthHack Agency',
-    companyLogo: '📝',
-    location: 'Remote',
-    salary: ' 350',
-    salaryType: 'Fixed Budget',
-    type: 'Entry',
-    postedDate: '8 days ago',
-    description: 'Looking for a copywriter to create compelling landing page copy for SaaS product. Must understand conversion optimization and have portfolio of successful landing pages.',
-    proposals: 12,
-    tags: ['Entry', 'Fixed Budget', 'Copywriting'],
-    isSaved: false,
-    category: 'Copywriting'
-  },
-  {
-    id: 4,
-    title: 'Fitness App UI Design',
-    company: 'FitLife Tech',
-    companyLogo: '💪',
-    location: 'San Francisco, CA',
-    salary: ' 45 ',
-    salaryType: 'Hourly Rate',
-    type: 'Intermediate',
-    postedDate: '3 days ago',
-    description: 'UI/UX designer needed for fitness tracking mobile application. Experience with health/fitness apps preferred. Must create wireframes, prototypes, and final designs.',
-    proposals: 31,
-    tags: ['Intermediate', 'Hourly Rate', 'Mobile App Design'],
-    isSaved: false,
-    category: 'Mobile App Design'
-  },
-  {
-    id: 5,
-    title: 'WordPress E-commerce Site',
-    company: 'Boutique Store',
-    companyLogo: '🛍️',
-    location: 'London, UK',
-    salary: ' 750',
-    salaryType: 'Fixed Budget',
-    type: 'Intermediate',
-    postedDate: '5 days ago',
-    description: 'Need WordPress developer to build e-commerce website with WooCommerce integration. Custom theme development, payment gateway setup, and SEO optimization required.',
-    proposals: 22,
-    tags: ['Intermediate', 'Fixed Budget', 'Website Development'],
-    isSaved: false,
-    category: 'Website Development'
-  },
-  {
-    id: 6,
-    title: 'Social Media Graphics',
-    company: 'Digital Marketing Co.',
-    companyLogo: '🎨',
-    location: 'Remote',
-    salary: ' 280',
-    salaryType: 'Fixed Budget',
-    type: 'Entry',
-    postedDate: '6 days ago',
-    description: 'Graphic designer needed for social media campaign assets including Instagram posts, stories, and Facebook ads. Must have experience with Adobe Creative Suite.',
-    proposals: 15,
-    tags: ['Entry', 'Fixed Budget', 'Website Design'],
-    isSaved: true,
-    category: 'Website Design'
-  },
-  {
-    id: 7,
-    title: 'Full-Stack Development',
-    company: 'StartupXYZ',
-    companyLogo: '🚀',
-    location: 'Remote',
-    salary: ' 65',
-    salaryType: 'Hourly Rate',
-    type: 'Advanced',
-    postedDate: '12 days ago',
-    description: 'Full-stack developer needed for building a complete web application from scratch. Must know React, Node.js, and PostgreSQL.',
-    proposals: 8,
-    tags: ['Advanced', 'Hourly Rate', 'Website Development'],
-    isSaved: false,
-    category: 'Website Development'
-  },
-  {
-    id: 8,
-    title: 'Logo Design Package',
-    company: 'BrandNew Co.',
-    companyLogo: '🎯',
-    location: 'Remote',
-    salary: ' 500',
-    salaryType: 'Fixed Budget',
-    type: 'Entry',
-    postedDate: '4 days ago',
-    description: 'Need logo design for new company. Looking for modern, minimalist design that represents innovation and technology.',
-    proposals: 42,
-    tags: ['Entry', 'Fixed Budget', 'Website Design'],
-    isSaved: false,
-    category: 'Website Design'
-  },
-];
+      {
+        id: 1,
+        title: 'E-commerce Mobile App Design',
+        company: 'ShopEasy Inc.',
+        companyLogo: '🛒',
+        location: 'Remote',
+        salary: ' 590',
+        salaryType: 'Fixed Budget',
+        type: 'Intermediate',
+        postedDate: '1 day ago',
+        description: 'Looking for a talented mobile app designer to create a modern e-commerce app with intuitive user interface and smooth user experience. Must have experience with Figma and prototyping.',
+        proposals: 24,
+        tags: ['Intermediate', 'Fixed Budget', 'Mobile App Design'],
+        isSaved: false,
+        category: 'Mobile App Design'
+      },
+      {
+        id: 2,
+        title: 'React Dashboard Development',
+        company: 'TechCorp Solutions',
+        companyLogo: '⚛️',
+        location: 'New York, USA',
+        salary: ' 24 ',
+        salaryType: 'Hourly Rate',
+        type: 'Advanced',
+        postedDate: '2 days ago',
+        description: 'Need experienced React developer to build admin dashboard with real-time analytics, charts, and user management. Experience with TypeScript, Chart.js, and REST APIs required.',
+        proposals: 18,
+        tags: ['Advanced', 'Hourly Rate', 'Website Development'],
+        isSaved: true,
+        category: 'Website Development'
+      },
+      {
+        id: 3,
+        title: 'Landing Page Copywriting',
+        company: 'GrowthHack Agency',
+        companyLogo: '📝',
+        location: 'Remote',
+        salary: ' 350',
+        salaryType: 'Fixed Budget',
+        type: 'Entry',
+        postedDate: '8 days ago',
+        description: 'Looking for a copywriter to create compelling landing page copy for SaaS product. Must understand conversion optimization and have portfolio of successful landing pages.',
+        proposals: 12,
+        tags: ['Entry', 'Fixed Budget', 'Copywriting'],
+        isSaved: false,
+        category: 'Copywriting'
+      },
+      {
+        id: 4,
+        title: 'Fitness App UI Design',
+        company: 'FitLife Tech',
+        companyLogo: '💪',
+        location: 'San Francisco, CA',
+        salary: ' 45 ',
+        salaryType: 'Hourly Rate',
+        type: 'Intermediate',
+        postedDate: '3 days ago',
+        description: 'UI/UX designer needed for fitness tracking mobile application. Experience with health/fitness apps preferred. Must create wireframes, prototypes, and final designs.',
+        proposals: 31,
+        tags: ['Intermediate', 'Hourly Rate', 'Mobile App Design'],
+        isSaved: false,
+        category: 'Mobile App Design'
+      },
+      {
+        id: 5,
+        title: 'WordPress E-commerce Site',
+        company: 'Boutique Store',
+        companyLogo: '🛍️',
+        location: 'London, UK',
+        salary: ' 750',
+        salaryType: 'Fixed Budget',
+        type: 'Intermediate',
+        postedDate: '5 days ago',
+        description: 'Need WordPress developer to build e-commerce website with WooCommerce integration. Custom theme development, payment gateway setup, and SEO optimization required.',
+        proposals: 22,
+        tags: ['Intermediate', 'Fixed Budget', 'Website Development'],
+        isSaved: false,
+        category: 'Website Development'
+      },
+      {
+        id: 6,
+        title: 'Social Media Graphics',
+        company: 'Digital Marketing Co.',
+        companyLogo: '🎨',
+        location: 'Remote',
+        salary: ' 280',
+        salaryType: 'Fixed Budget',
+        type: 'Entry',
+        postedDate: '6 days ago',
+        description: 'Graphic designer needed for social media campaign assets including Instagram posts, stories, and Facebook ads. Must have experience with Adobe Creative Suite.',
+        proposals: 15,
+        tags: ['Entry', 'Fixed Budget', 'Website Design'],
+        isSaved: true,
+        category: 'Website Design'
+      },
+      {
+        id: 7,
+        title: 'Full-Stack Development',
+        company: 'StartupXYZ',
+        companyLogo: '🚀',
+        location: 'Remote',
+        salary: ' 65',
+        salaryType: 'Hourly Rate',
+        type: 'Advanced',
+        postedDate: '12 days ago',
+        description: 'Full-stack developer needed for building a complete web application from scratch. Must know React, Node.js, and PostgreSQL.',
+        proposals: 8,
+        tags: ['Advanced', 'Hourly Rate', 'Website Development'],
+        isSaved: false,
+        category: 'Website Development'
+      },
+      {
+        id: 8,
+        title: 'Logo Design Package',
+        company: 'BrandNew Co.',
+        companyLogo: '🎯',
+        location: 'Remote',
+        salary: ' 500',
+        salaryType: 'Fixed Budget',
+        type: 'Entry',
+        postedDate: '4 days ago',
+        description: 'Need logo design for new company. Looking for modern, minimalist design that represents innovation and technology.',
+        proposals: 42,
+        tags: ['Entry', 'Fixed Budget', 'Website Design'],
+        isSaved: false,
+        category: 'Website Design'
+      },
+    ];
     setJobs(mockJobs);
   }, []);
 
@@ -316,6 +323,33 @@ const JobsPage: React.FC = () => {
 
   const handleSortChange = (value: string) => {
     setSortBy(value);
+  };
+
+  // Proposal submission handler
+  const handleSubmitProposal = async (proposalData: any) => {
+    // In a real app, this would send to your backend
+    console.log('Submitting proposal:', {
+      jobId: selectedJob?.id,
+      freelancerId: user?.id,
+      ...proposalData
+    });
+    
+    // Show success message
+    alert('Proposal submitted successfully! The client will review your proposal.');
+    
+    // Update job proposals count
+    if (selectedJob) {
+      const updatedJobs = jobs.map(job => 
+        job.id === selectedJob.id 
+          ? { ...job, proposals: job.proposals + 1 }
+          : job
+      );
+      setJobs(updatedJobs);
+    }
+    
+    // Close modal
+    setShowProposalModal(false);
+    setSelectedJob(null);
   };
 
   // Check if any filters are active
@@ -487,6 +521,11 @@ const JobsPage: React.FC = () => {
                       key={job.id}
                       job={job}
                       onToggleSave={handleToggleSave}
+                      onProposalClick={() => {
+                        setSelectedJob(job);
+                        setShowProposalModal(true);
+                      }}
+                      userRole={user?.role}
                     />
                   ))}
                 </div>
@@ -495,6 +534,19 @@ const JobsPage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Proposal Modal - Only show if user is a freelancer */}
+      {user?.role === 'freelancer' && (
+        <ProposalModal
+          isOpen={showProposalModal}
+          onClose={() => {
+            setShowProposalModal(false);
+            setSelectedJob(null);
+          }}
+          onSubmit={handleSubmitProposal}
+          job={selectedJob}
+        />
+      )}
     </div>
   );
 };

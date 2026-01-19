@@ -20,7 +20,8 @@ import {
   Plus,
   X,
   LogIn,
-  UserPlus
+  UserPlus,
+  FileText
 } from 'lucide-react';
 import { Notification } from '../types';
 import { useAuth } from '../contexts/AuthContext';
@@ -157,22 +158,27 @@ const Header: React.FC = () => {
     { code: 'ja', name: '日本語', flag: '🇯🇵' },
   ];
 
-  // User menu options - UPDATED: Removed "My Profile" since we have the "View Profile" button
-  // In Header.tsx, update the userMenuOptions array:
+  // User menu options
 const userMenuOptions = [
   { icon: <User size={16} />, label: 'My Profile', action: () => navigate('/profile') },
   { icon: <Briefcase size={16} />, label: 'My Jobs', action: () => alert('Opening jobs...') },
   { icon: <CreditCard size={16} />, label: 'Billing & Payments', action: () => navigate('/billing') },
-  { icon: <Settings size={16} />, label: 'Settings', action: () => navigate('/settings') }, // UPDATED
+  { icon: <Settings size={16} />, label: 'Settings', action: () => navigate('/settings') },
   { icon: <HelpCircle size={16} />, label: 'Help & Support', action: () => navigate('/support') },
+
+  // Client-only menu item
+  ...(user?.role === 'client'
+    ? [{ icon: <FileText size={16} />, label: 'Proposals', action: () => navigate('/proposals') }]
+    : []),
 ];
+
   // Handle logout
-  const handleLogout = () => {
+  function handleLogout() {
     logout();
     setUserMenuOpen(false);
     alert('Logged out successfully!');
     navigate('/');
-  };
+  }
 
   // Toggle mobile menu
   const toggleMobileMenu = () => {

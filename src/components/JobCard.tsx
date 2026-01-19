@@ -5,9 +5,11 @@ import { Job } from '../types';
 interface JobCardProps {
   job: Job;
   onToggleSave: (id: number) => void;
+  onProposalClick?: () => void;
+  userRole?: string;
 }
 
-const JobCard: React.FC<JobCardProps> = ({ job, onToggleSave }) => {
+const JobCard: React.FC<JobCardProps> = ({ job, onToggleSave, onProposalClick, userRole }) => {
   const getTagClasses = (tag: string) => {
     switch (tag) {
       case 'Fixed Budget':
@@ -118,7 +120,10 @@ const JobCard: React.FC<JobCardProps> = ({ job, onToggleSave }) => {
             {job.salaryType}
           </div>
         </div>
-        <button className="bg-white text-text-primary border border-border rounded-md px-4 md:px-6 py-2 text-sm font-medium cursor-pointer transition-colors whitespace-nowrap hover:bg-bg-light hover:border-accent-green hover:text-accent-green">
+        <button 
+          onClick={onProposalClick}
+          className="bg-white text-text-primary border border-border rounded-md px-4 md:px-6 py-2 text-sm font-medium cursor-pointer transition-colors whitespace-nowrap hover:bg-bg-light hover:border-accent-green hover:text-accent-green"
+        >
           Submit Proposal
         </button>
       </div>
