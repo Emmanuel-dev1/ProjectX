@@ -45,11 +45,11 @@ const Header: React.FC = () => {
 
   // Mock notifications
   const [notifications, setNotifications] = useState<Notification[]>([
-    { id: 1, title: 'New job match', description: 'E-commerce Mobile App Design matches your skills', time: '2 minutes ago', read: false, type: 'job' },
-    { id: 2, title: 'Proposal viewed', description: 'Client viewed your proposal for React Dashboard', time: '1 hour ago', read: true, type: 'proposal' },
-    { id: 3, title: 'Payment received', description: 'GHS 590 received for completed project', time: '3 hours ago', read: false, type: 'payment' },
-    { id: 4, title: 'New message', description: 'ShopEasy Inc. sent you a message', time: '5 hours ago', read: false, type: 'message' },
-    { id: 5, title: 'Job expired', description: 'WordPress E-commerce Site listing has expired', time: '1 day ago', read: true, type: 'job' },
+    { id: 1, userId: user?.id || 'user-1', title: 'New job match', description: 'E-commerce Mobile App Design matches your skills', time: '2 minutes ago', read: false, type: 'job' },
+    { id: 2, userId: user?.id || 'user-1', title: 'Proposal viewed', description: 'Client viewed your proposal for React Dashboard', time: '1 hour ago', read: true, type: 'proposal' },
+    { id: 3, userId: user?.id || 'user-1', title: 'Payment received', description: 'GHS 590 received for completed project', time: '3 hours ago', read: false, type: 'payment' },
+    { id: 4, userId: user?.id || 'user-1', title: 'New message', description: 'ShopEasy Inc. sent you a message', time: '5 hours ago', read: false, type: 'message' },
+    { id: 5, userId: user?.id || 'user-1', title: 'Job expired', description: 'WordPress E-commerce Site listing has expired', time: '1 day ago', read: true, type: 'job' },
   ]);
 
   // Define navigation links based on authentication and role
@@ -161,9 +161,10 @@ const Header: React.FC = () => {
   // User menu options
 const userMenuOptions = [
   { icon: <User size={16} />, label: 'My Profile', action: () => navigate('/profile') },
-  { icon: <Briefcase size={16} />, label: 'My Jobs', action: () => alert('Opening jobs...') },
+  { icon: <Briefcase size={16} />, label: 'My Jobs', action: () => navigate('/my-jobs') },
   { icon: <CreditCard size={16} />, label: 'Billing & Payments', action: () => navigate('/billing') },
   { icon: <Settings size={16} />, label: 'Settings', action: () => navigate('/settings') },
+ 
   { icon: <HelpCircle size={16} />, label: 'Help & Support', action: () => navigate('/support') },
 
   // Client-only menu item

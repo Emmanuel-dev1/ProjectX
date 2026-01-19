@@ -17,6 +17,7 @@ import BillingPage from './pages/BillingPage'; // ADD THIS IMPORT
 import SettingsPage from './pages/SettingsPage'; // ADD THIS IMPORT
 import ClientProposalsPage from './pages/ClientProposalsPage';
 import Footer from './components/Footer';
+import MyJobsPage from './pages/MyJobsPage';
 import './index.css';
 
 
@@ -57,6 +58,8 @@ const App: React.FC = () => {
                 <BillingPage />
               </ProtectedRoute>
             } />
+
+            <Route path="/my-jobs" element={<MyJobsPage />} />
             
             <Route path="/proposals" element={
                 <ProtectedRoute requiredRole="client">
