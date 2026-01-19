@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: 'class',
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
@@ -22,37 +23,25 @@ export default {
         // Background colors
         'bg': {
           'light': '#F7F8FA',
+          'dark': '#0B0B0B',
           'card': '#FFFFFF',
+          'card-dark': '#1A1A1A',
         },
         // Text colors
         'text': {
           'primary': '#111111',
+          'primary-dark': '#FFFFFF',
           'secondary': '#6B7280',
+          'secondary-dark': '#9CA3AF',
           'light': '#9CA3AF',
+          'light-dark': '#6B7280',
         },
         // Border colors
         'border': {
           'DEFAULT': '#E5E7EB',
+          'DEFAULT-dark': '#374151',
           'light': '#F3F4F6',
-        },
-        // Tag colors
-        'tag': {
-          'green': {
-            'bg': '#D1FAE5',
-            'text': '#065F46',
-          },
-          'blue': {
-            'bg': '#DBEAFE',
-            'text': '#1E40AF',
-          },
-          'purple': {
-            'bg': '#F3E8FF',
-            'text': '#6B21A8',
-          },
-          'gray': {
-            'bg': '#F3F4F6',
-            'text': '#374151',
-          },
+          'light-dark': '#1F2937',
         },
         // Notification colors
         'notification': {

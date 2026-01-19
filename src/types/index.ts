@@ -1,3 +1,22 @@
+export interface Notification {
+  id: number;
+  title: string;
+  description: string;
+  time: string;
+  read: boolean;
+  type: 'job' | 'proposal' | 'payment' | 'message';
+}
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: 'client' | 'freelancer';
+  avatar?: string;
+}
+
+// Add any other existing interfaces below...
+
 // Job types
 export interface Job {
   id: number;
